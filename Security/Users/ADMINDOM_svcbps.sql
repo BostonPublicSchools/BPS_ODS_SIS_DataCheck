@@ -1,0 +1,5 @@
+IF NOT EXISTS (SELECT * FROM master.dbo.syslogins WHERE loginname = N'ADMINDOM\svcbps')
+CREATE LOGIN [ADMINDOM\svcbps] FROM WINDOWS
+GO
+CREATE USER [ADMINDOM\svcbps] FOR LOGIN [ADMINDOM\svcbps]
+GO
