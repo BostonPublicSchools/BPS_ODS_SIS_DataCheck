@@ -17,7 +17,8 @@ BEGIN
     (
         SELECT DISTINCT
                std.StudentUniqueId,
-               seo.EducationOrganizationId
+               seo.EducationOrganizationId,
+			   'ODS' as RecordsFoundIn
         FROM Edfi_Student std
             INNER JOIN Edfi_StudentEducationOrganizationAssociation seo
                 ON std.StudentUSI = seo.StudentUSI
@@ -27,19 +28,21 @@ BEGIN
         EXCEPT
         SELECT DISTINCT
                STD.STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AS AS StudentNo,
-               SUBSTRING(ORG.ORG_ID, 3, 7) COLLATE SQL_Latin1_General_CP1_CI_AS AS EducationOrganizationId
+               SUBSTRING(ORG.ORG_ID, 3, 7) COLLATE SQL_Latin1_General_CP1_CI_AS AS EducationOrganizationId,
+			   'ODS' as RecordsFoundIn
         FROM [BPSDATA-03].ExtractAspen.dbo.STUDENT STD
             INNER JOIN [BPSDATA-03].ExtractAspen.dbo.ORGANIZATION ORG
                 ON STD.STD_ORG_OID_1 = ORG.ORG_OID
         WHERE STD.STD_ENROLLMENT_STATUS = 'Active'
     ) a
-    UNION
+    UNION ALL
     SELECT b.*
     FROM
     (
         SELECT DISTINCT
                STD.STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AS AS StudentNo,
-               SUBSTRING(ORG.ORG_ID, 3, 7) COLLATE SQL_Latin1_General_CP1_CI_AS AS EducationOrganizationId
+               SUBSTRING(ORG.ORG_ID, 3, 7) COLLATE SQL_Latin1_General_CP1_CI_AS AS EducationOrganizationId,
+			   'SIS' as RecordsFoundIn
         FROM [BPSDATA-03].ExtractAspen.dbo.STUDENT STD
             INNER JOIN [BPSDATA-03].ExtractAspen.dbo.ORGANIZATION ORG
                 ON STD.STD_ORG_OID_1 = ORG.ORG_OID
@@ -47,7 +50,8 @@ BEGIN
         EXCEPT
         SELECT DISTINCT
                std.StudentUniqueId,
-               seo.EducationOrganizationId
+               seo.EducationOrganizationId,
+			   'SIS' as RecordsFoundIn
         FROM Edfi_Student std
             INNER JOIN Edfi_StudentEducationOrganizationAssociation seo
                 ON std.StudentUSI = seo.StudentUSI

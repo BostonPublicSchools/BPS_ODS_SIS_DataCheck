@@ -95,26 +95,30 @@ AND (sc.SchoolId BETWEEN 1000 AND 4800
 
 SELECT DISTINCT 
 STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AS AS STD_ID_LOCAL,
-PhoneNumber COLLATE SQL_Latin1_General_CP1_CI_AS AS Language
+PhoneNumber COLLATE SQL_Latin1_General_CP1_CI_AS AS Language,
+'SIS' AS RecordsFoundIn
 FROM #tempaspenphn
 WHERE PhoneNumber COLLATE SQL_Latin1_General_CP1_CI_AS IS NOT NULL
 EXCEPT
 SELECT DISTINCT 
 StudentUniqueId,
-PhoneNumber
+PhoneNumber,
+'SIS' AS RecordsFoundIn
 FROM #tempodsphn
-UNION
+UNION ALL
 SELECT DISTINCT 
 StudentUniqueId,
-PhoneNumber
+PhoneNumber,
+'ODS' AS RecordsFoundIn
 FROM #tempodsphn
 WHERE PhoneNumber <> '(617 000-0000'
 EXCEPT
 SELECT DISTINCT 
 STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AS AS STD_ID_LOCAL,
-PhoneNumber COLLATE SQL_Latin1_General_CP1_CI_AS AS Language
+PhoneNumber COLLATE SQL_Latin1_General_CP1_CI_AS AS Language,
+'ODS' AS RecordsFoundIn
 FROM #tempaspenphn
 WHERE PhoneNumber COLLATE SQL_Latin1_General_CP1_CI_AS IS NOT NULL
-
+ORDER BY RecordsFoundIn
 END
 GO

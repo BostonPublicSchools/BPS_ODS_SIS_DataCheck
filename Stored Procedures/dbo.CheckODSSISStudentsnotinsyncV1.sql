@@ -14,7 +14,8 @@ AS
 BEGIN
     SET NOCOUNT ON;
 SELECT DISTINCT
-       STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ID_LOCAL
+       STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ID_LOCAL,
+	   'SIS' AS RecordsFoundIn
 FROM [BPSDATA-03].ExtractAspen.dbo.V_STUDENT s WITH (NOLOCK)
     INNER JOIN [BPSDATA-03].ExtractAspen.dbo.V_SCHOOL WITH (NOLOCK)
         ON SKL_OID = STD_SKL_OID
@@ -36,7 +37,8 @@ WHERE (
 
 EXCEPT
 SELECT DISTINCT
-       StudentUniqueId
+       StudentUniqueId,
+	   'SIS' AS RecordsFoundIn
 FROM Edfi_Student s WITH (NOLOCK)
     LEFT JOIN Edfi_StudentSchoolAssociation eo WITH (NOLOCK)
         ON eo.StudentUSI = s.StudentUSI
@@ -49,9 +51,10 @@ WHERE eo.ExitWithdrawDate IS NULL
       BETWEEN 9000 AND 9999
       )
 	  --AND eo.SchoolYear = 2021
-UNION
+UNION ALL
 SELECT DISTINCT
-       StudentUniqueId
+       StudentUniqueId,
+	   'ODS' AS RecordsFoundIn
 FROM Edfi_Student s WITH (NOLOCK)
     LEFT JOIN Edfi_StudentSchoolAssociation eo WITH (NOLOCK)
         ON eo.StudentUSI = s.StudentUSI
@@ -66,7 +69,8 @@ WHERE eo.ExitWithdrawDate IS NULL
 	  --AND eo.SchoolYear = 2021
 EXCEPT
 SELECT DISTINCT
-       STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ID_LOCAL
+       STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ID_LOCAL,
+	   'ODS' AS RecordsFoundIn
 FROM [BPSDATA-03].ExtractAspen.dbo.V_STUDENT s WITH (NOLOCK)
     INNER JOIN [BPSDATA-03].ExtractAspen.dbo.V_SCHOOL WITH (NOLOCK)
         ON SKL_OID = STD_SKL_OID

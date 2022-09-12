@@ -19,8 +19,8 @@ BEGIN
 
     SELECT STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AS AS STD_ID_LOCAL,
            --, RAC_RACE_CODE
-           RCD_FIELDD_001 COLLATE SQL_Latin1_General_CP1_CI_AS AS AspenRace
-    --, RCD_CODE_EDFI [Ed-Fi 3 Code]
+           RCD_FIELDD_001 COLLATE SQL_Latin1_General_CP1_CI_AS AS AspenRace,
+		   'SIS' AS RecordsFoundIn
     FROM [BPSDATA-03].ExtractAspen.dbo.PERSON
         JOIN [BPSDATA-03].ExtractAspen.dbo.STUDENT
             ON PSN_OID = STD_PSN_OID
@@ -96,7 +96,8 @@ BEGIN
     EXCEPT
     SELECT DISTINCT
            StudentUniqueId,
-           Descriptor.CodeValue AS ODSRace
+           Descriptor.CodeValue AS ODSRace,
+		   'SIS' AS RecordsFoundIn
     FROM EdFi_Student Student
         JOIN Edfi_StudentEducationOrganizationAssociation seoa
             ON seoa.StudentUSI = Student.StudentUSI
@@ -113,10 +114,11 @@ BEGIN
           AND Student.StudentUniqueId NOT IN ( '258973', '380941', '412394', '412394', '412394', '425168', '425739',
                                                '425741', '426308', '426321', '435322'
                                              )
-    UNION
+    UNION ALL
     SELECT DISTINCT
            StudentUniqueId,
-           Descriptor.CodeValue AS ODSRace
+           Descriptor.CodeValue AS ODSRace,
+		   'ODS' AS RecordsFoundIn
     FROM Edfi_Student Student
         JOIN Edfi_StudentEducationOrganizationAssociation seoa
             ON seoa.StudentUSI = Student.StudentUSI
@@ -136,7 +138,8 @@ BEGIN
     EXCEPT
     SELECT STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AS AS STD_ID_LOCAL,
            --, RAC_RACE_CODE
-           RCD_FIELDD_001 COLLATE SQL_Latin1_General_CP1_CI_AS AS AspenRace
+           RCD_FIELDD_001 COLLATE SQL_Latin1_General_CP1_CI_AS AS AspenRace,
+		   'ODS' AS RecordsFoundIn
     --, RCD_CODE_EDFI [Ed-Fi 3 Code]
     FROM [BPSDATA-03].ExtractAspen.dbo.PERSON
         JOIN [BPSDATA-03].ExtractAspen.dbo.STUDENT
@@ -209,7 +212,8 @@ BEGIN
         --					   ,'Asian, Black','Asian, Pacific Islander, White','Pacific Islander, White','Asian, Black, Pacific Islander'
         --					   ,'Black, Pacific Islander','Black, Native American, Pacific Islander, White')
         --AND 
-        STD_ENROLLMENT_STATUS IN ( 'Active', 'Inactive', 'Graduate', 'Registered' );
+        STD_ENROLLMENT_STATUS IN ( 'Active', 'Inactive', 'Graduate', 'Registered' )
+		ORDER BY  RecordsFoundIn;
 
 END;
 GO

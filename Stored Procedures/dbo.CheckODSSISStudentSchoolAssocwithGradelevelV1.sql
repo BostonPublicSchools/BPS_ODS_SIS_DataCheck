@@ -17,7 +17,8 @@ BEGIN
 
     SELECT ssc.SchoolId,
            d.CodeValue AS Student_Grade,
-           COUNT(StudentUniqueId) Student_Cnt
+           COUNT(StudentUniqueId) Student_Cnt,
+		   'ODS' AS RecordsFoundIn
     FROM Edfi_Student s WITH (NOLOCK)
         INNER JOIN Edfi_StudentSchoolAssociation ssc WITH (NOLOCK)
             ON ssc.StudentUSI = s.StudentUSI
@@ -40,7 +41,8 @@ BEGIN
     EXCEPT
     SELECT SKL_SCHOOL_ID COLLATE SQL_Latin1_General_CP1_CI_AS AS SKL_SCHOOL_ID,
            RCD_FIELDD_001 COLLATE SQL_Latin1_General_CP1_CI_AS AS Student_Grade,
-           COUNT(STD_ID_LOCAL) AS Student_cnt
+           COUNT(STD_ID_LOCAL) AS Student_cnt,
+		   'ODS' AS RecordsFoundIn
     FROM
     (
         SELECT DISTINCT
@@ -73,16 +75,18 @@ BEGIN
     ) a
     GROUP BY SKL_SCHOOL_ID,
              RCD_FIELDD_001
-    UNION
+    UNION ALL
     SELECT SKL_SCHOOL_ID COLLATE SQL_Latin1_General_CP1_CI_AS AS SKL_SCHOOL_ID,
            RCD_FIELDD_001 COLLATE SQL_Latin1_General_CP1_CI_AS AS Student_Grade,
-           COUNT(STD_ID_LOCAL) AS Student_cnt
+           COUNT(STD_ID_LOCAL) AS Student_cnt,
+		   'SIS' AS RecordsFoundIn
     FROM
     (
         SELECT DISTINCT
                skl.SKL_SCHOOL_ID,
                RCD_FIELDD_001,
-               std.STD_ID_LOCAL
+               std.STD_ID_LOCAL,
+			   'SIS' AS RecordsFoundIn
         FROM [BPSDATA-03].ExtractAspen.dbo.STUDENT std WITH (NOLOCK)
             INNER JOIN [BPSDATA-03].ExtractAspen.dbo.SCHOOL skl WITH (NOLOCK)
                 ON skl.SKL_OID = std.STD_SKL_OID
@@ -112,7 +116,8 @@ BEGIN
     EXCEPT
     SELECT ssc.SchoolId,
            d.CodeValue AS Student_Grade,
-           COUNT(StudentUniqueId) Student_Cnt
+           COUNT(StudentUniqueId) Student_Cnt,
+		   'SIS' AS RecordsFoundIn
     FROM Edfi_Student s WITH (NOLOCK)
         INNER JOIN  Edfi_StudentSchoolAssociation ssc WITH (NOLOCK)
             ON ssc.StudentUSI = s.StudentUSI

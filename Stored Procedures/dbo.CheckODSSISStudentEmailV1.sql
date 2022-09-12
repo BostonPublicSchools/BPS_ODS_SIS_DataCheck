@@ -92,7 +92,8 @@ BEGIN
     (
         SELECT DISTINCT
                STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ID_LOCAL,
-               EMAILID COLLATE SQL_Latin1_General_CP1_CI_AI AS EMAILID
+               EMAILID COLLATE SQL_Latin1_General_CP1_CI_AI AS EMAILID,
+			   'SIS' as RecordsFoundIn
         FROM #tempaspen
         WHERE EMAILID NOT LIKE CAST(STD_ID_LOCAL AS VARCHAR(10)) + '@%'
               AND EMAILID IS NOT NULL
@@ -100,22 +101,25 @@ BEGIN
         EXCEPT
         SELECT DISTINCT
                StudentUniqueId,
-               ElectronicMailAddress
+               ElectronicMailAddress,
+			   'SIS' as RecordsFoundIn
         FROM #tempods
     ) aa
-    UNION
+    UNION ALL
     SELECT *
     FROM
     (
         SELECT DISTINCT
                StudentUniqueId,
-               ElectronicMailAddress
+               ElectronicMailAddress,
+			   'ODS' as RecordsFoundIn
         FROM #tempods
         EXCEPT
         SELECT DISTINCT
                STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ID_LOCAL,
-               EMAILID COLLATE SQL_Latin1_General_CP1_CI_AI AS EMAILID
+               EMAILID COLLATE SQL_Latin1_General_CP1_CI_AI AS EMAILID,
+			   'ODS' as RecordsFoundIn
         FROM #tempaspen
-    ) bb;
+    ) bb ORDER BY RecordsFoundIn;
 END;
 GO

@@ -21,7 +21,8 @@ BEGIN
 
     SELECT s.StudentUniqueId,
            c.EducationOrganizationId,
-           COUNT(*)
+           COUNT(*),
+		   'ODS' as RecordsFoundIn 
     FROM [s3v5ys_EdFi_BPS_ProdYS_Ods_2023].[edfi].[StudentEducationOrganizationAssociationAddress] b
         INNER JOIN s3v5ys_EdFi_BPS_ProdYS_Ods_2023.edfi.Student s
             ON s.StudentUSI = b.StudentUSI

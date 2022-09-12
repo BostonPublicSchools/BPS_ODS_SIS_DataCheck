@@ -17,7 +17,8 @@ declare @current_year nvarchar(20) = (select top 1 SchoolYear from dbo._Config_A
 SELECT DISTINCT
        B.StaffUniqueId,
        A.SchoolId,
-       A.SchoolYear
+       A.SchoolYear,
+	  'ODS' as RecordsFoundIn
 FROM Edfi_StaffSchoolAssociation A
     INNER JOIN Edfi_Staff B
         ON B.StaffUSI = A.StaffUSI
@@ -34,7 +35,8 @@ SELECT DISTINCT
            WHEN ISNUMERIC(C.SKL_SCHOOL_ID) = 1 THEN
                C.SKL_SCHOOL_ID
        END COLLATE SQL_Latin1_General_CP1_CI_AS SchoolID,
-       d.CTX_SCHOOL_YEAR
+       d.CTX_SCHOOL_YEAR,
+	   'ODS' as RecordsFoundIn
 FROM [BPSDATA-03].ExtractAspen.dbo.STAFF a
     INNER JOIN [BPSDATA-03].ExtractAspen.dbo.SCHOOL C
         ON a.STF_SKL_OID = C.SKL_OID
@@ -53,7 +55,8 @@ SELECT DISTINCT
            WHEN ISNUMERIC(C.SKL_SCHOOL_ID) = 1 THEN
                C.SKL_SCHOOL_ID
        END COLLATE SQL_Latin1_General_CP1_CI_AS SchoolID,
-       d.CTX_SCHOOL_YEAR
+       d.CTX_SCHOOL_YEAR,
+	   'SIS' as RecordsFoundIn
 FROM [BPSDATA-03].ExtractAspen.dbo.STAFF a
     INNER JOIN [BPSDATA-03].ExtractAspen.dbo.SCHOOL C
         ON a.STF_SKL_OID = C.SKL_OID
@@ -66,13 +69,14 @@ EXCEPT
 SELECT DISTINCT
        B.StaffUniqueId,
        A.SchoolId,
-       A.SchoolYear
+       A.SchoolYear,
+	   'SIS' as RecordsFoundIn
 FROM Edfi_StaffSchoolAssociation A
     INNER JOIN Edfi_Staff B
         ON B.StaffUSI = A.StaffUSI
 WHERE A.SchoolYear IS NOT NULL
       --AND A.SchoolYear = 2021
-      AND A.SchoolId <> 9035;
+      AND A.SchoolId <> 9035 ORDER BY RecordsFoundIn;
 
 END
 GO

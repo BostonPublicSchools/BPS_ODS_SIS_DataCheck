@@ -30,7 +30,8 @@ declare @current_year nvarchar(20) = (select top 1 SchoolYear from dbo._Config_A
                                                                - CHARINDEX(' ', REVERSE(s.STD_ADRS_VIEW)))
                               )
                END COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ADRS_VIEW,
-               RIGHT(s.STD_ADRS_VIEW, CHARINDEX(' ', REVERSE(s.STD_ADRS_VIEW)) - 1)COLLATE SQL_Latin1_General_CP1_CI_AI AS zip
+               RIGHT(s.STD_ADRS_VIEW, CHARINDEX(' ', REVERSE(s.STD_ADRS_VIEW)) - 1)COLLATE SQL_Latin1_General_CP1_CI_AI AS zip,
+			   'SIS' as RecordsFoundIn
         FROM [BPSDATA-03].ExtractAspen.dbo.V_STUDENT s WITH (NOLOCK)
             INNER JOIN [BPSDATA-03].ExtractAspen.dbo.V_STUDENT_ENROLLMENT e WITH (NOLOCK)
                 ON s.STD_OID = ENR_STD_OID
@@ -54,7 +55,8 @@ declare @current_year nvarchar(20) = (select top 1 SchoolYear from dbo._Config_A
         SELECT DISTINCT
                a.StudentUniqueId,
                StreetNumberName,
-               PostalCode
+               PostalCode,
+			   'ODS' as RecordsFoundIn
         FROM Edfi_Student a WITH (NOLOCK)
             INNER JOIN Edfi_StudentEducationOrganizationAssociation seo WITH (NOLOCK)
                 ON a.StudentUSI = seo.StudentUSI
@@ -73,24 +75,28 @@ declare @current_year nvarchar(20) = (select top 1 SchoolYear from dbo._Config_A
 
     SELECT RTRIM(LTRIM(STD_ID_LOCAL)) COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ID_LOCAL,
            RTRIM(LTRIM(STD_ADRS_VIEW)) COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ADRS_VIEW,
-           RTRIM(LTRIM(zip)) COLLATE SQL_Latin1_General_CP1_CI_AI AS ZIP
+           RTRIM(LTRIM(zip)) COLLATE SQL_Latin1_General_CP1_CI_AI AS ZIP,
+		   'SIS' as RecordsFoundIn
     FROM #tempaspen
     --WHERE RTRIM(LTRIM(STD_ID_LOCAL)) COLLATE SQL_Latin1_General_CP1_CI_AI=203350
     EXCEPT
     SELECT RTRIM(LTRIM(StudentUniqueId)) AS StudentUniqueId,
            RTRIM(LTRIM(StreetNumberName)) AS StreetNumberName,
-           RTRIM(LTRIM(PostalCode)) AS PostalCode
+           RTRIM(LTRIM(PostalCode)) AS PostalCode,
+		   'SIS' as RecordsFoundIn
     FROM #tempods
     --WHERE RTRIM(LTRIM(StudentUniqueId)) = 203350
     UNION
     SELECT RTRIM(LTRIM(StudentUniqueId)) AS StudentUniqueId,
            RTRIM(LTRIM(StreetNumberName)) AS StreetNumberName,
-           RTRIM(LTRIM(PostalCode)) AS PostalCode
+           RTRIM(LTRIM(PostalCode)) AS PostalCode,
+		   'ODS' as RecordsFoundIn
     FROM #tempods
     EXCEPT
     SELECT RTRIM(LTRIM(STD_ID_LOCAL)) COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ID_LOCAL,
            RTRIM(LTRIM(STD_ADRS_VIEW)) COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ADRS_VIEW,
-           RTRIM(LTRIM(zip)) COLLATE SQL_Latin1_General_CP1_CI_AI AS ZIP
+           RTRIM(LTRIM(zip)) COLLATE SQL_Latin1_General_CP1_CI_AI AS ZIP,
+		   'ODS' as RecordsFoundIn
     FROM #tempaspen;
 
 END;

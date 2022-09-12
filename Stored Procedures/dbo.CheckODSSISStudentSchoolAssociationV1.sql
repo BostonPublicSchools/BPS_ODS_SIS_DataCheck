@@ -29,7 +29,8 @@ BEGIN
                WHERE SchoolId = EO.EducationOrganizationId
                      --AND SchoolYear = @Year
                      AND ExitWithdrawDate IS NULL
-           )
+           ),
+		   'ODS' AS RecordsFoundIn
     FROM Edfi_EducationOrganization AS EO
     WHERE EO.EducationOrganizationId IN ( 1010, 1020, 1030, 1040, 1050, 1053, 1070, 1080, 1103, 1120, 1140, 1162, 1171,
                                           1195, 1200, 1210, 1215, 1230, 1253, 1256, 1260, 1265, 1285, 1291, 1292, 1293,
@@ -59,7 +60,8 @@ BEGIN
                FROM [BPSDATA-03].ExtractAspen.dbo.STUDENT AS STD
                WHERE STD.STD_ENROLLMENT_STATUS = 'Active'
                      AND STD.STD_SKL_OID = SKL.SKL_OID
-           )
+           ),
+		   'ODS' AS RecordsFoundIn
     FROM [BPSDATA-03].ExtractAspen.dbo.SCHOOL AS SKL
     WHERE --SKL_FIELDB_038 = '00350000' AND SKL_ORG_OID_2 = '0002'
         SKL.SKL_SCHOOL_ID IN ( '1010', '1020', '1030', '1040', '1050', '1053', '1070', '1080', '1103', '1120', '1140',

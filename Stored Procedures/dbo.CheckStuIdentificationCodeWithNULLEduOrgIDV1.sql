@@ -15,7 +15,8 @@ BEGIN
 
     SELECT b.StudentUSI,
            c.EducationOrganizationId,
-           COUNT(*)
+           COUNT(*),
+		   'ODS' as RecordsFoundIn 
     FROM Edfi_StudentEducationOrganizationAssociationStudentIdentificationCode b
         LEFT JOIN EdFi_StudentEducationOrganizationAssociation c
             ON b.StudentUSI = c.StudentUSI

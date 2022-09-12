@@ -216,15 +216,17 @@ BEGIN
 
     SELECT DISTINCT
            STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AS AS STD_ID_LOCAL,
-           Language COLLATE SQL_Latin1_General_CP1_CI_AS AS Language
+           Language COLLATE SQL_Latin1_General_CP1_CI_AS AS Language,
+		   'SIS' AS RecordsFoundIn
     FROM #tempaspenlan
     WHERE Language COLLATE SQL_Latin1_General_CP1_CI_AS IS NOT NULL
     EXCEPT
     SELECT DISTINCT
            StudentUniqueId,
-           [language]
-    FROM #tempodslan;
-
+           [language],
+		   'SIS' AS RecordsFoundIn
+    FROM #tempodslan
+	ORDER BY RecordsFoundIn
 
 END;
 GO

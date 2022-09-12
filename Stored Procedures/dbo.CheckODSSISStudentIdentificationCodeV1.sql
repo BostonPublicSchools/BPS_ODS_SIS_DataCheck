@@ -17,7 +17,8 @@ BEGIN
 
     SELECT DISTINCT
            STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AS AS STD_ID_LOCAL,
-           STD_ID_STATE COLLATE SQL_Latin1_General_CP1_CI_AS AS STD_ID_STATE
+           STD_ID_STATE COLLATE SQL_Latin1_General_CP1_CI_AS AS STD_ID_STATE,
+		   'SIS' as RecordsFoundIn
     FROM [BPSDATA-03].ExtractAspen.dbo.STUDENT s
         --INNER JOIN [BPSDATA-03].ExtractAspen.dbo.V_STUDENT_ENROLLMENT e WITH (NOLOCK) ON s.STD_OID = e.ENR_STD_OID
         INNER JOIN [BPSDATA-03].ExtractAspen.dbo.V_SCHOOL WITH (NOLOCK)
@@ -37,7 +38,8 @@ BEGIN
     EXCEPT
     SELECT DISTINCT
            std.StudentUniqueId,
-           sic.IdentificationCode
+           sic.IdentificationCode,
+		   'SIS' as RecordsFoundIn
     FROM Edfi_Student std
         INNER JOIN Edfi_StudentEducationOrganizationAssociation seo
             ON std.StudentUSI = seo.StudentUSI
@@ -53,10 +55,11 @@ BEGIN
           --AND (sc.SchoolId  BETWEEN 1000 AND 4800
           --   OR sc.SchoolId BETWEEN 9000 AND 9999)
           AND sic.AssigningOrganizationIdentificationCode = 'State'
-    UNION
+    UNION ALL
     SELECT DISTINCT
            std.StudentUniqueId,
-           sic.IdentificationCode
+           sic.IdentificationCode,
+		   'ODS' as RecordsFoundIn
     FROM Edfi_Student std
         INNER JOIN Edfi_StudentEducationOrganizationAssociation seo
             ON std.StudentUSI = seo.StudentUSI
@@ -75,7 +78,8 @@ BEGIN
     EXCEPT
     SELECT DISTINCT
            STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AS AS STD_ID_LOCAL,
-           STD_ID_STATE COLLATE SQL_Latin1_General_CP1_CI_AS AS STD_ID_STATE
+           STD_ID_STATE COLLATE SQL_Latin1_General_CP1_CI_AS AS STD_ID_STATE,
+		   'ODS' as RecordsFoundIn
     FROM [BPSDATA-03].ExtractAspen.dbo.STUDENT s
         --INNER JOIN [BPSDATA-03].ExtractAspen.dbo.V_STUDENT_ENROLLMENT e WITH (NOLOCK) ON s.STD_OID = e.ENR_STD_OID
         INNER JOIN [BPSDATA-03].ExtractAspen.dbo.V_SCHOOL WITH (NOLOCK)
@@ -84,7 +88,7 @@ BEGIN
             ON SKL_CTX_OID_CURRENT = CTX_OID
     --AND ENR_ENROLLMENT_DATE >= CTX_START_DATE
     --Ragha Y 08-10-2020 Updated to 2022-2023 from 2019-2020'
-    WHERE CTX_CONTEXT_ID =@current_year; --AND 
+    WHERE CTX_CONTEXT_ID =@current_year ORDER BY RecordsFoundIn; --AND 
 --e.ENR_WITHDATE IS NULL
 --AND 
 --(COALESCE(TRY_CAST(SKL_SCHOOL_ID AS INT),-1) BETWEEN 1000 AND 4800
