@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[StudentIEPRef]
+CREATE TABLE [dbo].[StudentIEPRefv1]
 (
 [iep_Id] [numeric] (20, 0) NULL,
 [studentUniqueId] [nvarchar] (255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,

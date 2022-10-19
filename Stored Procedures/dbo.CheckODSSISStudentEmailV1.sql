@@ -69,22 +69,6 @@ BEGIN
               OR COALESCE(TRY_CAST(SKL_SCHOOL_ID AS INT), -1)
           BETWEEN 9000 AND 9999
           )
-
-        --UNION
-        --SELECT DISTINCT
-        --       s.STD_ID_LOCAL COLLATE SQL_Latin1_General_CP1_CI_AI AS STD_ID_LOCAL,
-        --       p.PSN_EMAIL_02 COLLATE SQL_Latin1_General_CP1_CI_AI AS PSN_EMAIL_02,
-        --       s.STD_ENROLLMENT_STATUS
-        --FROM [BPSDATA-03].ExtractAspen.dbo.V_STUDENT s WITH (NOLOCK)
-        --    INNER JOIN [BPSDATA-03].ExtractAspen.[dbo].[V_PERSON] p WITH (NOLOCK)
-        --        ON s.STD_PSN_OID = p.PSN_OID
-        --    INNER JOIN [BPSDATA-03].ExtractAspen.dbo.V_SCHOOL WITH (NOLOCK)
-        --        ON SKL_OID = STD_SKL_OID
-        --    INNER JOIN [BPSDATA-03].ExtractAspen.dbo.V_DISTRICT_SCHOOL_YEAR_CONTEXT WITH (NOLOCK)
-        --        ON SKL_CTX_OID_CURRENT = CTX_OID
-        ----Ragha Y 08-10-2020 Updated to 2020-2021 from 2019-2020
-        --WHERE CTX_CONTEXT_ID = '2020-2021'
-        --      AND (ISNULL(p.PSN_EMAIL_02, '') <> '')
     ) a;
 
     SELECT *
