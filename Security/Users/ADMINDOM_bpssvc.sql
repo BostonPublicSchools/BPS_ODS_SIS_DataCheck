@@ -1,5 +1,0 @@
-IF NOT EXISTS (SELECT * FROM master.dbo.syslogins WHERE loginname = N'ADMINDOM\bpssvc')
-CREATE LOGIN [ADMINDOM\bpssvc] FROM WINDOWS
-GO
-CREATE USER [ADMINDOM\bpssvc] FOR LOGIN [ADMINDOM\bpssvc]
-GO

@@ -1,2 +1,0 @@
-USE [BPS_ODS_SIS_DataCheck]
-GO
